@@ -11,7 +11,7 @@ Open-source web solution for downloading files from URL with user isolation and 
 - Actions: download, rename, move to global, create temporary share URL.
 - URL input field to trigger your existing `downloader.py` script from the UI.
 
-## Quick start
+## Quick start (local Python)
 
 ```bash
 python -m venv .venv
@@ -21,6 +21,40 @@ python app.py
 ```
 
 Open http://localhost:5000
+
+## Docker Compose deployment
+
+1. (Optional) Create a `.env` file:
+
+```env
+SECRET_KEY=replace-with-a-long-random-secret
+SHARE_TTL_SECONDS=3600
+```
+
+2. Build and start:
+
+```bash
+docker compose up -d --build
+```
+
+3. View logs:
+
+```bash
+docker compose logs -f web
+```
+
+4. Stop service:
+
+```bash
+docker compose down
+```
+
+The app is exposed on `http://localhost:5000`.
+
+### Persistent data in Docker
+
+- `downloader_data` volume: stores SQLite DB at `/app/data/app.db`
+- `downloader_storage` volume: stores user/global downloaded files at `/app/storage`
 
 ## Configuration
 

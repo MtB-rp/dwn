@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    container_name: web-downloader
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-change-this-in-production}
+      DATABASE_URL: sqlite:////app/data/app.db
+      SHARE_TTL_SECONDS: ${SHARE_TTL_SECONDS:-3600}
+    volumes:
+      - downloader_data:/app/data
+      - downloader_storage:/app/storage
+    restart: unless-stopped
+
+volumes:
+  downloader_data:
+  downloader_storage:

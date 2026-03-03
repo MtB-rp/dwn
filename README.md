@@ -1,4 +1,5 @@
 # Web Downloader Portal
+[ This project is generated entirely from Codex AI ]
 
 Open-source web solution for downloading files from URL with user isolation and file sharing.
 

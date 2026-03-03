@@ -5,3 +5,4 @@ app.db
 storage/
 .env
 data/
+certs/

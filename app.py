@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import pathlib
 import subprocess
+import sys
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -82,6 +83,23 @@ def list_entries(root: pathlib.Path, rel_path: str):
             }
         )
     return current, entries
+
+
+def downloader_command(source: str, output_dir: pathlib.Path, convert: bool = False) -> list[str]:
+    command = [sys.executable, str(BASE_DIR / "downloader.py")]
+    if convert:
+        command.append("-a")
+    command.extend([source, str(output_dir)])
+    return command
+
+
+def run_downloader(source: str, output_dir: pathlib.Path, convert: bool = False) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        downloader_command(source, output_dir, convert=convert),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
 
 
 def register_routes(app: Flask) -> None:
@@ -170,17 +188,34 @@ def register_routes(app: Flask) -> None:
             flash("Invalid destination", "danger")
             return redirect(url_for("files", location="user"))
 
-        proc = subprocess.run(
-            ["python", str(BASE_DIR / "downloader.py"), url, str(output_dir)],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        convert = request.form.get("convert") == "on"
+        proc = run_downloader(url, output_dir, convert=convert)
         if proc.returncode != 0:
             flash(f"Download failed: {proc.stderr.strip()}", "danger")
         else:
-            flash("File downloaded successfully", "success")
+            action = "downloaded and converted" if convert else "downloaded"
+            flash(f"File {action} successfully", "success")
         return redirect(url_for("files", location="user", path=rel_path))
+
+    @app.route("/convert", methods=["POST"])
+    @login_required
+    def convert_file():
+        location = request.form.get("location", "user")
+        rel_path = request.form.get("path", "")
+        root = user_root(current_user) if location == "user" else GLOBAL_DIR
+        file_path = safe_path(root, rel_path)
+        if not file_path.exists() or not file_path.is_file():
+            flash("File not found", "danger")
+            return redirect(url_for("files", location=location))
+
+        proc = run_downloader(str(file_path), file_path.parent, convert=True)
+        if proc.returncode != 0:
+            flash(f"Conversion failed: {proc.stderr.strip()}", "danger")
+        else:
+            flash("File converted successfully", "success")
+
+        back_path = str(pathlib.Path(rel_path).parent) if rel_path else ""
+        return redirect(url_for("files", location=location, path=back_path if back_path != "." else ""))
 
     @app.route("/download")
     @login_required

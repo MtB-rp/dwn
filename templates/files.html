@@ -13,6 +13,7 @@
   <form action="{{ url_for('download_url') }}" method="post" class="inline-form">
     <input type="hidden" name="path" value="{{ rel_path }}" />
     <input type="url" name="url" placeholder="https://example.com/file.zip" required />
+    <label class="inline-checkbox"><input type="checkbox" name="convert" /> Convert file (-a)</label>
     <button type="submit">Download from URL</button>
   </form>
   {% endif %}
@@ -40,6 +41,11 @@
               <input type="hidden" name="path" value="{{ fp }}" />
               <input name="new_name" placeholder="new name" required />
               <button type="submit">Rename</button>
+            </form>
+            <form method="post" action="{{ url_for('convert_file') }}" class="inline-form">
+              <input type="hidden" name="location" value="{{ location }}" />
+              <input type="hidden" name="path" value="{{ fp }}" />
+              <button type="submit">Convert (-a)</button>
             </form>
             {% if location == 'user' %}
               <form method="post" action="{{ url_for('to_global') }}" class="inline-form">

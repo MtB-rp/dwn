@@ -1,5 +1,4 @@
 # Web Downloader Portal
-[ This project is generated entirely from Codex AI ]
 
 Open-source web solution for downloading files from URL with user isolation and file sharing.
 
@@ -9,8 +8,9 @@ Open-source web solution for downloading files from URL with user isolation and 
 - Per-user private download folders (`storage/users/<user_id>`).
 - Global shared folder (`storage/global`) for files visible to all authenticated users.
 - File explorer style listing for private/global locations.
-- Actions: download, rename, move to global, create temporary share URL.
+- Actions: download, rename, convert, move to global, create temporary share URL.
 - URL input field to trigger your existing `downloader.py` script from the UI.
+- Optional conversion support passes `-a` to `downloader.py` when selected during download or from the file list.
 
 ## Quick start (local Python)
 
@@ -87,6 +87,10 @@ Environment variables:
 - `USE_HTTPS`: enable TLS in gunicorn (`true`/`false`, default `false`).
 - `TLS_CERT_FILE`: path to mounted TLS cert file (default `/certs/tls.crt`).
 - `TLS_KEY_FILE`: path to mounted TLS key file (default `/certs/tls.key`).
+
+## Downloader conversion
+
+The web app calls `downloader.py -a <source> <output_dir>` when a user selects conversion next to the URL field or clicks `Convert (-a)` for an existing file. Replace the sample conversion hook in `downloader.py` with your real converter if your deployment uses a different implementation.
 
 ## Notes
 

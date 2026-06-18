@@ -13,3 +13,6 @@ th, td { border-bottom: 1px solid #ddd; padding: .5rem; text-align: left; }
 .flashes li { margin: .3rem 0; padding: .5rem; border-radius: 4px; }
 .success { background: #d4edda; }
 .danger { background: #f8d7da; }
+
+.inline-checkbox { display: inline-block; margin-left: .5rem; }
+.inline-checkbox input { margin-left: 0; }

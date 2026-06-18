@@ -11,6 +11,7 @@ Open-source web solution for downloading files from URL with user isolation and 
 - Actions: download, rename, convert, move to global, create temporary share URL.
 - URL input field to trigger your existing `downloader.py` script from the UI.
 - Optional conversion support passes `-a` to `downloader.py` when selected during download or from the file list.
+- Docker image includes `ffmpeg` for audio conversion workflows.
 
 ## Quick start (local Python)
 
@@ -90,7 +91,7 @@ Environment variables:
 
 ## Downloader conversion
 
-The web app calls `downloader.py -a <source> <output_dir>` when a user selects conversion next to the URL field or clicks `Convert (-a)` for an existing file. Replace the sample conversion hook in `downloader.py` with your real converter if your deployment uses a different implementation.
+The web app calls `downloader.py -a <source> <output_dir>` when a user selects conversion next to the URL field or clicks `Convert (-a)` for an existing file. The Docker image installs `ffmpeg`, so your real conversion implementation can call it directly from inside the container. Replace the sample conversion hook in `downloader.py` with your real converter if your deployment uses a different implementation.
 
 ## Notes
 

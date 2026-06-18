@@ -1,0 +1,25 @@
+services:
+  web:
+    build: .
+    container_name: web-downloader
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-change-this-in-production}
+      DATABASE_URL: sqlite:////app/data/app.db
+      SHARE_TTL_SECONDS: ${SHARE_TTL_SECONDS:-3600}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-8}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-300}
+      USE_HTTPS: ${USE_HTTPS:-false}
+      TLS_CERT_FILE: ${TLS_CERT_FILE:-/certs/tls.crt}
+      TLS_KEY_FILE: ${TLS_KEY_FILE:-/certs/tls.key}
+    volumes:
+      - downloader_data:/app/data
+      - downloader_storage:/app/storage
+      - ${CERTS_DIR:-./certs}:/certs:ro
+    restart: unless-stopped
+
+volumes:
+  downloader_data:
+  downloader_storage:
